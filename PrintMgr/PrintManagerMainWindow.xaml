@@ -1,0 +1,33 @@
+﻿<Window x:Class="PrintMgr.PrintManagerMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="One click print" Height="300" Width="700"
+        MaxWidth="770" MinWidth="770"
+        MinHeight="300"
+        Topmost="True" Icon="Img/img_printer_print.png">
+    <Grid Name="GridMain" Margin="0,0,0,0" HorizontalAlignment="Stretch" Width="Auto">
+        
+        <Grid Margin="10,40,50,10">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Margin="0,0,0,0">
+                <Border BorderBrush="LightSteelBlue" BorderThickness="2">
+                    <StackPanel Name="StackPanelSheets"></StackPanel>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+        
+        <Button Visibility="Hidden" Margin="0,50,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="30" Height="30" IsEnabled="False">
+            <StackPanel>
+                <Image Source="Img/img_printer_settings.png"></Image>
+            </StackPanel>
+        </Button>
+        <Button Name="ButtonPrintAll" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="30" Height="30" Click="ButtonPrintAll_Click" IsDefault="True">
+            <StackPanel>
+                <Image Source="Img/img_printer_print.png" ToolTip="Print all"></Image>
+            </StackPanel>
+        </Button>
+        <CheckBox Content="Reverse" Margin="0,15,55,0" VerticalAlignment="Top" IsChecked="True" HorizontalAlignment="Right" Width="58" IsEnabled="False"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="602,12,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="30" IsEnabled="False"/>
+        <Label Content="Количество копий:" HorizontalAlignment="Left" Margin="488,9,0,0" VerticalAlignment="Top"/>
+        <Button Name="ButtonAddOpenDocks" Content="Все открытые" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="119" Click="ButtonAddOpenDocks_Click"/>
+    </Grid>
+</Window>

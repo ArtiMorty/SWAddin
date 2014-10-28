@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <format>
+    <name>A0</name>
+    <height>841</height>
+    <width>1189</width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+  <format>
+    <name>A1</name>
+    <height>594</height>
+    <width>841</width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+  <format>
+    <name>A2</name>
+    <height>420</height>
+    <width>524</width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+  <format>
+    <name>A3</name>
+    <height>297</height>
+    <width>420</width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+  <format>
+    <name>A4</name>
+    <height>210</height>
+    <width>297</width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+  <format>
+    <name>A5</name>
+    <height></height>
+    <width></width>
+    <printer></printer>
+    <scale>100</scale>
+  </format>
+</root>
