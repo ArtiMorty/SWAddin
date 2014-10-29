@@ -4,10 +4,7 @@
         Title="PropertiesManagerWindow" Height="393" Width="809">
     <Grid>
         <GroupBox Header="Разработчики" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Height="175" Width="239">
-            <Grid Name="GridDevelopers">
-                <Label Content="Разработал:" Margin="0,10,145,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
-                <ComboBox HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="120"/>
-            </Grid>
+            <StackPanel Name="StackPanelNames"/>
 
         </GroupBox>
         

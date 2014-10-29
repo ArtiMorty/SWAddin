@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using SolidWorks.Interop.sldworks;
@@ -20,11 +18,11 @@ namespace PrintMgr
             _pmWindow = new PrintManagerMainWindow(this);
             _sheetSettings = new List<SheetSettings>();
 
-            docsAndSheets = new Dictionary<ModelDoc2, List<SheetSettings>>();
+            _docsAndSheets = new Dictionary<ModelDoc2, List<SheetSettings>>();
 
             AddSheetsToMainWindow(DrwDoc);
 
-            openDocuments =
+            _openDocuments =
                 ((object[]) aSldWorks.GetDocuments()).Where(
                     x =>
                         ((ModelDoc2) x).GetType() == (int) swDocumentTypes_e.swDocDRAWING &&
@@ -42,9 +40,9 @@ namespace PrintMgr
 
         private readonly List<SheetSettings> _sheetSettings;
 
-        private readonly IEnumerable<object> openDocuments;
+        private readonly IEnumerable<object> _openDocuments;
 
-        private Dictionary<ModelDoc2, List<SheetSettings>> docsAndSheets;
+        private readonly Dictionary<ModelDoc2, List<SheetSettings>> _docsAndSheets;
         
         
         //Methods
@@ -60,7 +58,7 @@ namespace PrintMgr
                 Content = (aDrawingDoc).GetPathName(),
             });
 
-            docsAndSheets.Add(aDrawingDoc, new List<SheetSettings>());
+            _docsAndSheets.Add(aDrawingDoc, new List<SheetSettings>());
             
             for (int i = 0; i < sheets.Length; i++)
             {
@@ -69,13 +67,13 @@ namespace PrintMgr
                 _sheetSettings.Add(shtSet);
                 _pmWindow.StackPanelSheets.Children.Add(shtSet.GridSheet);
 
-                docsAndSheets[aDrawingDoc].Add(shtSet);
+                _docsAndSheets[aDrawingDoc].Add(shtSet);
             }
         }
 
         public void AddOpenDocs()
         {
-            foreach (var openDocument in openDocuments)
+            foreach (var openDocument in _openDocuments)
             {
                 AddSheetsToMainWindow((ModelDoc2)openDocument);
             }
@@ -87,7 +85,7 @@ namespace PrintMgr
             //{
             //    if(_sheetSettings[i].Printable) _sheetSettings[i].PrintSheet();
             //}
-            foreach (KeyValuePair<ModelDoc2, List<SheetSettings>> docAndSheets in docsAndSheets)
+            foreach (KeyValuePair<ModelDoc2, List<SheetSettings>> docAndSheets in _docsAndSheets)
             {
                 foreach (SheetSettings sheet in docAndSheets.Value)
                 {

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Reflection;
 using System.Windows.Forms;
 using PrintMgr;
+using PropertiesMgr;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swpublished;
 using SolidWorks.Interop.swconst;
@@ -45,6 +46,8 @@ namespace SWAddin
 
         #region Property Manager Variables
         UserPMPage ppage = null;
+
+        private PrintManager _printManager;
         #endregion
 
 
@@ -179,6 +182,8 @@ namespace SWAddin
             RemovePMP();
             DetachEventHandlers();
 
+            _printManager = null;
+
             System.Runtime.InteropServices.Marshal.ReleaseComObject(iCmdMgr);
             iCmdMgr = null;
             System.Runtime.InteropServices.Marshal.ReleaseComObject(iSwApp);
@@ -237,7 +242,7 @@ namespace SWAddin
 
             int menuToolbarOption = (int)(swCommandItemType_e.swMenuItem | swCommandItemType_e.swToolbarItem);
             cmdIndex0 = cmdGroup.AddCommandItem2("Print manager", -1, "Print manager", "Print manager", 1, "RunPrintManager", "", mainItemID1, menuToolbarOption);
-            cmdIndex1 = cmdGroup.AddCommandItem2("Show PMP", -1, "Display sample property manager", "Show PMP", 2, "ShowPMP", "EnablePMP", mainItemID2, menuToolbarOption);
+            cmdIndex1 = cmdGroup.AddCommandItem2("Properties Manager", -1, "Display sample property manager", "Properties Manager", 2, "RunPropertiesManager", "Properties Manager", mainItemID2, menuToolbarOption);
 
             cmdGroup.HasToolbar = true;
             cmdGroup.HasMenu = true;
@@ -364,17 +369,24 @@ namespace SWAddin
 
         public void RunPrintManager()
         {
+            if(_printManager != null) return;
+
             if (((ModelDoc2)iSwApp.ActiveDoc).GetType() == (int)swDocumentTypes_e.swDocDRAWING)
             {
                 try
                 {
-                    var printManager = new PrintManager(iSwApp);
+                    _printManager = new PrintManager(iSwApp);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
             }
+        }
+
+        public void RunPropertiesManager()
+        {
+            var propManager = new PropertiesManager(iSwApp);
         }
         
         public void CreateCube()
