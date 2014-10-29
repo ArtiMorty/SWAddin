@@ -41,3 +41,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+PropertiesMgr/obj/
+PropertiesMgr/bin/
+PrintMgr/obj/
+PrintMgr/bin/
