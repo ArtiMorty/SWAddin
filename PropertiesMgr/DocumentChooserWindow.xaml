@@ -1,0 +1,30 @@
+﻿<Window x:Class="PropertiesMgr.DocumentChooserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DocumentChooserWindow" Height="200" Width="500">
+    <Grid>
+        <ListBox 
+            Name="ListBoxDocs"
+            Margin="10,30,10,40"
+            SelectionMode="Single"
+            ItemsSource="{Binding}"
+            />
+        
+        <Label 
+            Content="Выберите документ"
+            HorizontalAlignment="Left"
+            Margin="10,4,0,0"
+            VerticalAlignment="Top"
+            Width="135"
+            />
+        <Button 
+            Name="ButtonOk" 
+            Content="ОК" 
+            Margin="0,0,10,10" 
+            HorizontalAlignment="Right" 
+            Width="75" 
+            Height="22" 
+            VerticalAlignment="Bottom" Click="ButtonOk_Click"/>
+
+    </Grid>
+</Window>
