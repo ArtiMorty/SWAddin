@@ -369,7 +369,7 @@ namespace SWAddin
 
         public void RunPrintManager()
         {
-            if(_printManager != null) return;
+            if (SwApp.ActiveDoc == null) return;
 
             if (((ModelDoc2)iSwApp.ActiveDoc).GetType() == (int)swDocumentTypes_e.swDocDRAWING)
             {
@@ -386,6 +386,8 @@ namespace SWAddin
 
         public void RunPropertiesManager()
         {
+            if (iSwApp.ActiveDoc == null) return;
+            
             var propManager = new PropertiesManager(iSwApp);
         }
         

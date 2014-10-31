@@ -1,13 +1,91 @@
 ﻿<Window x:Class="PropertiesMgr.PropertiesManagerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PropertiesManagerWindow" Height="393" Width="809">
+        Title="PropertiesManagerWindow" Height="532" Width="554" Topmost="True" ShowInTaskbar="False" Loaded="Window_Loaded_1">
     <Grid>
-        <GroupBox Header="Разработчики" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Height="175" Width="239">
-            <StackPanel Name="StackPanelNames"/>
+        <GroupBox 
+            Header="Разработчики" 
+            HorizontalAlignment="Left" 
+            Margin="10,30,0,0" 
+            VerticalAlignment="Top" 
+            Width="210" Height="206"
+            >
+            <StackPanel 
+                Name="StackPanelNames" 
+                Orientation="Vertical"
+                VerticalAlignment="Stretch"
+                />
 
         </GroupBox>
-        
-
+        <GroupBox Header="Обозначение и наименование" HorizontalAlignment="Left" Margin="225,30,0,0" Width="308" Height="206" VerticalAlignment="Top">
+            <Grid Margin="0,0,0,0">
+                <Label Name="LabelDesignation" Content=" " HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" FontWeight="Bold" FontSize="16" FontFamily="Courier New"/>
+                <TextBox x:Name="TextBoxModelName" 
+                	TextWrapping="Wrap" 
+                	Text="TextBox"
+                	HorizontalContentAlignment="Center"
+                	VerticalContentAlignment="Center" FontSize="16"
+                             Margin="10,69,10,0" Height="80" VerticalAlignment="Top"
+                             />
+                <Label Content="Наименование:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" Width="250"/>
+                <Label Content="Раздел:" HorizontalAlignment="Left" Margin="27,154,0,0" VerticalAlignment="Top" Width="50"/>
+                <ComboBox Name="ComboBoxSpecSection" 
+                          Margin="82,158,10,0" 
+                          VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+        <Button Content="Сохранить" 
+                Margin="0,0,10,10" 
+                HorizontalAlignment="Right" 
+                Width="75" 
+                Height="22" 
+                VerticalAlignment="Bottom" 
+                Click="ButtonSave_Click" IsDefault="True"/>
+        <Button Content="Отмена" Margin="0,0,170,10" IsCancel="True" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
+        <Button Content="Применить" Margin="0,0,90,10" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="ButtonApply_Click"/>
+        <GroupBox Header="Материал" HorizontalAlignment="Left" Margin="225,241,0,0" VerticalAlignment="Top" Height="112" Width="308">
+            <Grid>
+                <Separator Height="90" Margin="126,0,10,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5"/>
+                <ComboBox 
+                    Name="ComboBoxProkatName"
+                    HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Width="111"/>
+                <TextBox 
+                    Name="TextBoxProkatSize" 
+                    HorizontalAlignment="Left" 
+                    Height="23" 
+                    Margin="129,14,0,0" 
+                    TextWrapping="Wrap" 
+                    VerticalAlignment="Top" 
+                    Width="61"/>
+                <ComboBox 
+                    Name="ComboBoxMaterial"
+                    HorizontalAlignment="Left" Margin="129,53,0,0" VerticalAlignment="Top" Width="157"/>
+                <CheckBox 
+                    Name="CheckBoxSortament"
+                    Content="Сортамент" HorizontalAlignment="Left" Margin="14,9,0,0" VerticalAlignment="Top" Width="107"/>
+                <TextBox 
+                    Name="TextBoxProkatStandart"
+                    
+                    HorizontalAlignment="Left" Height="23" Margin="195,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="91"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Масса" HorizontalAlignment="Left" Margin="225,358,0,0" VerticalAlignment="Top" Height="95" Width="308">
+            <Grid Margin="0,0,0,0">
+                <Label 
+                    Name="LabelMass"
+                    Content="-" HorizontalAlignment="Left" Margin="85,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.895,0.885" Width="82"/>
+                <Label 
+                    Name="LabelDensity"
+                    Content="-" HorizontalAlignment="Left" Margin="85,41,0,0" VerticalAlignment="Top" Width="82"/>
+                <CheckBox 
+                    Name="CheckBoxNoMass"
+                    Content="Без массы" HorizontalAlignment="Left" Margin="208,15,0,0" VerticalAlignment="Top"/>
+                <CheckBox 
+                    Name="CheckBoxMassInTable"
+                    Content="См. табл." HorizontalAlignment="Left" Margin="208,46,0,0" VerticalAlignment="Top"/>
+                <Label Content="Масса:" HorizontalAlignment="Left" Margin="33,10,0,0" VerticalAlignment="Top"/>
+                <Label Content="Плотность:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

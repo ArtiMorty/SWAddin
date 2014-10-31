@@ -19,9 +19,29 @@ namespace PropertiesMgr
     /// </summary>
     public partial class PropertiesManagerWindow : Window
     {
-        public PropertiesManagerWindow()
+        public PropertiesManagerWindow(PropertiesManager aPropertiesManager)
         {
             InitializeComponent();
+
+            _propertiesManager = aPropertiesManager;
+        }
+
+        private PropertiesManager _propertiesManager;
+
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            _propertiesManager.Save();
+            Close();
+        }
+
+        private void ButtonApply_Click(object sender, RoutedEventArgs e)
+        {
+            _propertiesManager.Save();
+        }
+
+        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            _propertiesManager.InitComponents();
         }
     }
 }

@@ -15,28 +15,92 @@ namespace PropertiesMgr
         {
             _modelDoc = GetModel(aSldWorks);
 
-            _propertyManager = _modelDoc.Extension.get_CustomPropertyManager("");
-            _docUsersProperties = ((string[]) _modelDoc.GetCustomInfoNames()).ToDictionary(
-                x => x,
-                x => _modelDoc.GetCustomInfoValue("", x)
-                );
+            _swPropertyManager = _modelDoc.Extension.get_CustomPropertyManager("");
 
-            _propertiesManagerWindow = new PropertiesManagerWindow();
+            var propNames = new object();
+            var propTypes = new object();
+            var propValues = new object();
 
-            _names = new Names(_propertiesManagerWindow.StackPanelNames);
+            _swPropertyManager.GetAll(ref propNames, ref propTypes, ref propValues);
+
+            _docUsersPropertiesDictionary = new Dictionary<string, string>();
+            for (int i = 0; i < ((string[])propNames).Length; i++)
+            {
+                _docUsersPropertiesDictionary.Add(((string[])propNames)[i], ((string[])propValues)[i]);
+            }
+
+            GetModelName();
+
+            _propertiesManagerWindow = new PropertiesManagerWindow(this);
+
+
 
             _propertiesManagerWindow.ShowDialog();
+            
         }
 
         //Data
         private PropertiesManagerWindow _propertiesManagerWindow;
+        
         private Names _names;
+        private DesignationAndName _designationAndName;
+        private MaterialsAndMass _materialsAndMass;
+        
         private ModelDoc2 _modelDoc;
 
-        private Dictionary<string, string> _docUsersProperties;
-        private ICustomPropertyManager _propertyManager;
+        private Dictionary<string, string> _docUsersPropertiesDictionary;
+        private ICustomPropertyManager _swPropertyManager;
 
+        public string ModelName { get; private set; }
+
+        public string FileExtension
+        {
+            get { return SwExtension[_modelDoc.GetType()]; }
+        }
+
+        public string Section
+        {
+            get { return GetPropertyValue("Раздел"); }
+        }
+
+        public swDocumentTypes_e SwDocumentType
+        {
+            get { return (swDocumentTypes_e)_modelDoc.GetType(); }
+        }
+
+        public IModelDocExtension SwModelDocExtension
+        {
+            get { return _modelDoc.Extension; }
+        }
+
+        public int Density
+        {
+            get
+            {
+                return (int)_modelDoc.GetUserPreferenceDoubleValue(
+                    (int)swUserPreferenceDoubleValue_e.swMaterialPropertyDensity
+                    );
+            }
+            set
+            {
+                _modelDoc.SetUserPreferenceDoubleValue(
+                    (int)swUserPreferenceDoubleValue_e.swMaterialPropertyDensity,
+                    value
+                    );
+            }
+        }
+        
+        
         //Methods
+        public void InitComponents()
+        {
+            _names = new Names(this, _propertiesManagerWindow.StackPanelNames);
+            _designationAndName = new DesignationAndName(this, _propertiesManagerWindow);
+            _materialsAndMass = new MaterialsAndMass(this, _propertiesManagerWindow);
+
+            
+        }
+        
         private ModelDoc2 GetModel(ISldWorks aSldWorks)
         {
             var mod = (ModelDoc2)aSldWorks.ActiveDoc;
@@ -101,13 +165,15 @@ namespace PropertiesMgr
             int ind = 0;
             if (drawDocs.Count > 1)
             {
-                var chooser = new DocumentChooser(drawDocs);
+                var chooser = new DocumentChooserWindow(drawDocs);
                 chooser.ShowDialog();
                 ind = chooser.Index;
             }
 
             return drawDocs[ind];
         }
+
+        private static readonly string[] SwExtension = { "none", "sldprt", "sldasm", "slddrw", "sldSDM" };
 
         /// <summary>
         /// Extracts link to a model from bom table
@@ -135,6 +201,62 @@ namespace PropertiesMgr
             }
 
         }
+
+        public bool ContainsProperty(string aPropertyName)
+        {
+            return _docUsersPropertiesDictionary.ContainsKey(aPropertyName);
+        }
+
+        public string GetPropertyValue(string aPropertyName)
+        {
+            string value = "";
+            if (ContainsProperty(aPropertyName)) value = _docUsersPropertiesDictionary[aPropertyName];
+            return value;
+        }
+
+        public void Save()
+        {
+            _names.Save();
+            _designationAndName.Save();
+            _materialsAndMass.Save();
+        }
+
+        public void SaveProperty(string aPropertyName, string aPropertyValue)
+        {
+            if (_docUsersPropertiesDictionary.ContainsKey(aPropertyName))
+            {
+                if (string.IsNullOrEmpty(aPropertyValue))
+                {
+                    _swPropertyManager.Delete(aPropertyName);
+                }
+                else
+                {
+                    _swPropertyManager.Set(aPropertyName, aPropertyValue);
+                }
+            }
+            else if(!string.IsNullOrEmpty(aPropertyValue))
+            {
+                _swPropertyManager.Add2(aPropertyName, (int)swCustomInfoType_e.swCustomInfoText, aPropertyValue);
+            }
+            
+        }
+
+        private void GetModelName()
+        {
+            string path = _modelDoc.GetPathName();
+            if (path != "")
+            {
+                int dotPosition = path.LastIndexOf('.');
+                int slashPosition = path.LastIndexOf('\\');
+                ModelName = path.Substring(slashPosition + 1, dotPosition - slashPosition - 1);
+            }
+            else
+            {
+                ModelName = "Сохраните файл.";
+            }
+        }
+
+        
     }
 
     

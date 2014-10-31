@@ -57,10 +57,19 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DocumentChooserWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertiesManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="DesignationAndName.cs" />
+    <Compile Include="DocumentChooserWindow.xaml.cs">
+      <DependentUpon>DocumentChooserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MaterialAndMass.cs" />
     <Compile Include="Names.cs" />
     <Compile Include="PropertiesManager.cs" />
     <Compile Include="PropertiesManagerWindow.xaml.cs">
