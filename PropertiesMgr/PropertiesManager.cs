@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 
@@ -31,8 +29,23 @@ namespace PropertiesMgr
 
             GetModelName();
 
-            _propertiesManagerWindow = new PropertiesManagerWindow(this);
+            _propertiesManagerWindow = new PropertiesManagerWindow(this)
+            {
+                LabelWrightStatus = {Content = "Доступен для записи", Background = Brushes.LawnGreen}
+            };
 
+            //Read wright acсess
+
+            if (_modelDoc.IsOpenedReadOnly())
+            {
+                if (!_modelDoc.SetReadOnlyState(false))//try to get wright access
+                {
+                    _propertiesManagerWindow.LabelWrightStatus.Content = "Не доступен для записи";
+                    _propertiesManagerWindow.LabelWrightStatus.Background = Brushes.Red;
+                    _propertiesManagerWindow.ButtonSave.IsEnabled = false;
+                    _propertiesManagerWindow.ButtonApply.IsEnabled = false;
+                }
+            }
 
 
             _propertiesManagerWindow.ShowDialog();
@@ -40,16 +53,16 @@ namespace PropertiesMgr
         }
 
         //Data
-        private PropertiesManagerWindow _propertiesManagerWindow;
+        private readonly PropertiesManagerWindow _propertiesManagerWindow;
         
         private Names _names;
         private DesignationAndName _designationAndName;
         private MaterialsAndMass _materialsAndMass;
         
-        private ModelDoc2 _modelDoc;
+        private readonly ModelDoc2 _modelDoc;
 
-        private Dictionary<string, string> _docUsersPropertiesDictionary;
-        private ICustomPropertyManager _swPropertyManager;
+        private readonly Dictionary<string, string> _docUsersPropertiesDictionary;
+        private readonly ICustomPropertyManager _swPropertyManager;
 
         public string ModelName { get; private set; }
 
@@ -94,7 +107,7 @@ namespace PropertiesMgr
         //Methods
         public void InitComponents()
         {
-            _names = new Names(this, _propertiesManagerWindow.StackPanelNames);
+            _names = new Names(this, _propertiesManagerWindow);
             _designationAndName = new DesignationAndName(this, _propertiesManagerWindow);
             _materialsAndMass = new MaterialsAndMass(this, _propertiesManagerWindow);
 
@@ -256,7 +269,25 @@ namespace PropertiesMgr
             }
         }
 
-        
+        public void AddConfiguration()
+        {
+            try
+            {
+                int confNumber = ((string[])_modelDoc.GetConfigurationNames()).Length;
+                string confName = confNumber < 10 ? "0" + confNumber : confNumber.ToString();
+                string path = _modelDoc.GetPathName();
+                int dotPosition = path.LastIndexOf('.');
+                int slashPosition = path.LastIndexOf('\\');
+                string fileName = path.Substring(slashPosition + 1, dotPosition - slashPosition - 1);
+                _modelDoc.AddConfiguration3(confName, "", fileName + "-" + confName, (int)swConfigurationOptions2_e.swConfigOption_UseAlternateName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+
+            }
+        }
+
     }
 
     

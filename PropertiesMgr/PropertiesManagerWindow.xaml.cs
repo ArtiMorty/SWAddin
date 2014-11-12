@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PropertiesMgr
 {
@@ -24,9 +15,15 @@ namespace PropertiesMgr
             InitializeComponent();
 
             _propertiesManager = aPropertiesManager;
+
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = "dd.MM.yy";
+            Thread.CurrentThread.CurrentCulture = ci;
+
+            DatePickerCreationDate.SelectedDateFormat = DatePickerFormat.Short;
         }
 
-        private PropertiesManager _propertiesManager;
+        private readonly PropertiesManager _propertiesManager;
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
@@ -42,6 +39,11 @@ namespace PropertiesMgr
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             _propertiesManager.InitComponents();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            _propertiesManager.AddConfiguration();
         }
     }
 }

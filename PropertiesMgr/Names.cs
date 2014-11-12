@@ -17,7 +17,7 @@ namespace PropertiesMgr
         /// Constructor
         /// </summary>
         /// <param name="aStackPanelNames"></param>
-        public Names(PropertiesManager aPropertiesManager, StackPanel aStackPanelNames)
+        public Names(PropertiesManager aPropertiesManager, PropertiesManagerWindow aPropertiesManagerWindow)
         {
             _propertiesManager = aPropertiesManager;
             
@@ -25,12 +25,48 @@ namespace PropertiesMgr
 
             GetCurretNames();
 
-            InitializeNameControls(aStackPanelNames);
+            InitializeNameControls(aPropertiesManagerWindow.StackPanelNames);
+
+            //Date
+            _datePicker = aPropertiesManagerWindow.DatePickerCreationDate;
+            
+            _checkBoxDate = aPropertiesManagerWindow.CheckBoxDate;
+            _checkBoxDate.Checked += CheckBoxDate_Checked;
+            _checkBoxDate.Unchecked += CheckBoxDate_Unhecked;
+
+            if (aPropertiesManager.ContainsProperty("Дата"))
+            {
+                _checkBoxDate.IsChecked = true;
+                try
+                {
+                    _datePicker.SelectedDate = DateTime.Parse(aPropertiesManager.GetPropertyValue("Дата"));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _datePicker.SelectedDate = DateTime.Today;
+                }
+            }
+
+            //Format
+            _comboBoxFormat = aPropertiesManagerWindow.ComboBoxFormat;
+            var listFormats = new List<string> { "БЧ", "А4", "А3", "А2", "А1", "А0" };
+            _comboBoxFormat.ItemsSource = listFormats;
+            if (_propertiesManager.ContainsProperty("Формат"))
+            {
+                string currentFormat = _propertiesManager.GetPropertyValue("Формат");
+                if (!listFormats.Contains(currentFormat))
+                {
+                    listFormats.Add(currentFormat);
+                }
+                
+                _comboBoxFormat.Text = currentFormat;
+            }
 
         }
 
         //Data
-        private PropertiesManager _propertiesManager;
+        private readonly PropertiesManager _propertiesManager;
 
         enum Developers
         {
@@ -69,7 +105,11 @@ namespace PropertiesMgr
 
         private Dictionary<Developers, BindingList<string>> _usersNamesSetDictionary;
         private string[] _currentNames;
-        
+
+        private readonly DatePicker _datePicker;
+        private readonly CheckBox _checkBoxDate;
+
+        private readonly ComboBox _comboBoxFormat;
         //Methods
         private void InitializeNameControls(StackPanel aStackPanelNames)
         {
@@ -150,6 +190,26 @@ namespace PropertiesMgr
             {
                 _propertiesManager.SaveProperty(Devs[i], _comboBoxsNames[i].Text);
             }
+            _propertiesManager.SaveProperty("Дата", 
+                _datePicker.SelectedDate != null 
+                ? _datePicker.SelectedDate.Value.ToShortDateString() 
+                : "");
+            _propertiesManager.SaveProperty("Формат", _comboBoxFormat.Text);
+        }
+
+        //events
+
+        private void CheckBoxDate_Checked(object sender, EventArgs e)
+        {
+            _datePicker.IsEnabled = true;
+            _datePicker.SelectedDate = DateTime.Today;
+        }
+
+        private void CheckBoxDate_Unhecked(object sender, EventArgs e)
+        {
+            _datePicker.IsEnabled = false;
+            _datePicker.SelectedDate = null;
+
         }
     }
 }

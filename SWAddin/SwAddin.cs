@@ -387,8 +387,15 @@ namespace SWAddin
         public void RunPropertiesManager()
         {
             if (iSwApp.ActiveDoc == null) return;
+            try
+            {
+                var propManager = new PropertiesManager(iSwApp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             
-            var propManager = new PropertiesManager(iSwApp);
         }
         
         public void CreateCube()

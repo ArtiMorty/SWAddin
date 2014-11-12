@@ -45,6 +45,7 @@ namespace PropertiesMgr
             _checkBoxMassInTable.Checked += checkBoxMassInTable_Checked;
             _checkBoxMassInTable.Unchecked += checkBoxMassInTable_Unchecked;
 
+            //if assembly material section is not available
             if (_propertiesManager.Section == "Сборочные единицы")
             {
                 _checkBoxSortament.IsEnabled = false;
@@ -53,6 +54,7 @@ namespace PropertiesMgr
                 _textBoxProkatStandart.IsEnabled = false;
                 _comboBoxMaterial.IsEnabled = false;
             }
+
 
             _currentSortament = GetCurrentSortament();
             _currentMaterial = GetCurrentMaterial();
@@ -88,8 +90,9 @@ namespace PropertiesMgr
             string curMassProp = _propertiesManager.GetPropertyValue("Масса");
                 
 
-            //задать точность
-            if (_massProp != null && _massProp[5] > 10)//если масса менее 10кг, точность 2 знака
+            //set mass precision
+            //if < 10kg two desimal places, otherwise zero
+            if (_massProp != null && _massProp[5] > 10)
             {
                 _swModelDocExt.SetUserPreferenceInteger(
                     (int)swUserPreferenceIntegerValue_e.swUnitsMassPropDecimalPlaces,
@@ -106,6 +109,7 @@ namespace PropertiesMgr
                     );
             }
             
+            //check if nomass or massintable properties is true
             switch (curMassProp)
             {
                 case "-":
@@ -166,22 +170,7 @@ namespace PropertiesMgr
 
         #endregion
 
-        //events mass
-        //private void chckMassInTable_CheckedChanged(object sender, EventArgs e)//См. таблицу
-        //{
-        //    if (_checkBoxMassInTable.Checked)
-        //    {
-        //        _checkBoxNoMass.Enabled = false;
-        //        _lblMass.Text = "см.табл.";
-        //    }
-        //    else
-        //    {
-        //        _checkBoxNoMass.Enabled = true;
-        //        _lblMass.Text = Math.Round(_massProp[5], 2) + MassUnits[3];
-        //    }
-        //}
-
-        //Без массы
+        //No mass
         private void checkBoxNoMass_Checked(object sender, RoutedEventArgs e)
         {
             _checkBoxMassInTable.IsEnabled = false;
@@ -194,7 +183,7 @@ namespace PropertiesMgr
         }
 
 
-        //См. таблицу
+        //Mass in table
         private void checkBoxMassInTable_Checked(object sender, RoutedEventArgs e)
         {
             _checkBoxNoMass.IsEnabled = false;
@@ -227,8 +216,15 @@ namespace PropertiesMgr
 
         private void cmbxMarerial_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //UpdateDensity();
-            _labelDensity.Content = MaterialList[_comboBoxMaterial.SelectedIndex].Density.ToString();
+
+            if (_comboBoxMaterial.SelectedIndex >= 0)
+            {
+                _labelDensity.Content = MaterialList[_comboBoxMaterial.SelectedIndex].Density.ToString();
+            }
+            else
+            {
+                _labelDensity.Content = 0;
+            }
         }
         private void cmbxSortamentName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -240,6 +236,10 @@ namespace PropertiesMgr
 
 
         //methods
+        /// <summary>
+        /// Reads users material xml file and saves it to a list
+        /// </summary>
+        /// <param name="aMaterialList">materials from users file</param>
         private static void ReadMaterialXml(BindingList<Material> aMaterialList)//read users materials from xml
         {
             //aMaterialList.Add(new Material("", 1000));
@@ -251,6 +251,10 @@ namespace PropertiesMgr
             }
         }
 
+        /// <summary>
+        /// Reads users prokat xml file and saves it to a list
+        /// </summary>
+        /// <param name="aSortamentList"></param>
         private static void ReadProkatXml(BindingList<Sortament> aSortamentList)//read users prokat from xml
         {
             //aSortamentList.Add(new Sortament("", "", ""));
@@ -265,6 +269,7 @@ namespace PropertiesMgr
                 aSortamentList.Add(new Sortament(prokatName, prokatStandart, prokatTip));
             }
         }
+
 
         private void AddCurrentProkatToList(BindingList<Sortament> aSortamentList)
         {
@@ -310,22 +315,18 @@ namespace PropertiesMgr
             }
         }
 
-        private void UpdateDensity()
-        {
-            _labelDensity.Content = MaterialList[_comboBoxMaterial.SelectedIndex].Density.ToString();
-        }
-
-        public void UpdateMaterialsLists()
-        {
-            SortamentList.Clear();
-            MaterialList.Clear();
+        //public void UpdateMaterialsLists()
+        //{
+        //    SortamentList.Clear();
+        //    MaterialList.Clear();
             
-            ReadProkatXml(SortamentList);
-            AddCurrentProkatToList(SortamentList);
+        //    ReadProkatXml(SortamentList);
+        //    AddCurrentProkatToList(SortamentList);
 
-            ReadMaterialXml(MaterialList);
-            AddCurrentMaterialToList(MaterialList);
-        }
+        //    ReadMaterialXml(MaterialList);
+        //    AddCurrentMaterialToList(MaterialList);
+        //}
+
 
         private int GetSortamentIndexByStandart(string aStandart)
         {
@@ -399,7 +400,7 @@ namespace PropertiesMgr
 
             string sortamentName = sortamentIndex >= 0 ? SortamentList[sortamentIndex].Name : _comboBoxProkatName.Text;
             string sortamentFull = "";
-            if (_checkBoxSortament.IsChecked.HasValue)
+            if (_checkBoxSortament.IsChecked == true)
             {
                 sortamentFull = "<FONT size=1.8> <FONT size=3>" + sortamentName +
                                 " <STACK size=1>" + _textBoxProkatSize.Text + ' ' + sortamentStandart +
@@ -422,11 +423,11 @@ namespace PropertiesMgr
 
             #region save mass
 
-            if (_checkBoxNoMass.IsChecked.HasValue)
+            if (_checkBoxNoMass.IsChecked == true)
             {
                 _propertiesManager.SaveProperty("Масса", "-");
             }
-            else if (_checkBoxMassInTable.IsChecked.HasValue)
+            else if (_checkBoxMassInTable.IsChecked == true)
             {
                 _propertiesManager.SaveProperty("Масса", "см.табл.");
             }
@@ -449,33 +450,10 @@ namespace PropertiesMgr
             Tip = aTip;
         }
 
-        public Sortament(string aName, string aStandart, string aTip, string aSize)
-        {
-            Name = aName;
-            Standart = aStandart;
-            Tip = aTip;
-            Size = aSize;
-        }
-
         public string Name { get; set; }
         public string Standart { get; set; }
         public string Tip { get; set; }
         public string Size { get; set; }
-
-        
-        //public static bool operator ==(Sortament s1, Sortament s2)
-        //{
-        //    if (s1 == null && s2 == null) return true;
-        //    if (s1 != null || s2 != null) return false;
-        //    return s1.Standart == s2.Standart;
-        //    //return s2 != null && (s1 != null && s1.Standart == s2.Standart);
-        //}
-
-        //public static bool operator !=(Sortament s1, Sortament s2)
-        //{
-        //    return !(s1.Standart == s2.Standart);
-        //    //return s2 != null && (s1 != null && s1.Standart != s2.Standart);
-        //}
     }
 
     public class Material
